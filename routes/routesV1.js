@@ -13,6 +13,7 @@ router.post('/register', controllers.userController.register);
 
 
 // COMPARE PRICE
+router.get('/getListBiddingPrices', controllers.priceController.getListBiddingPrices)
 router.post('/getTotalPrice', controllers.priceController.getTotalPrice)
 
 
