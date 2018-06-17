@@ -5,7 +5,7 @@ const userDao = require('../../dao/UserDao')
 const jwtConfig = require('../../config/jwtConfig')
 const keysConfig = require('../../config/keysConfig')
 const axios = require('axios')
-
+const priceHelper = require('../../helper/priceHelper')
 
 exports.getTotalPrice = function (req, res) {
 
@@ -19,6 +19,8 @@ exports.getTotalPrice = function (req, res) {
         { name: "segurança", salary: "1900.0", qtd: 4 },
         { name: "Limpeza", salary: "1400.0", qtd: 6 }
     ]
+
+    const priceEstipulated = "100000.0"
 
     const country = "br";
     const source = "google-shopping";
@@ -60,7 +62,6 @@ exports.getTotalPrice = function (req, res) {
                                     const price = data.price
                                     const qtdSeparated = qtdGtin.split(`,`)
 
-                                    console.log(`price`,Math.round(price))
 
                                     totalToSpendInProducts = totalToSpendInProducts + (qtdSeparated[index] * price)
 
@@ -87,14 +88,16 @@ exports.getTotalPrice = function (req, res) {
                             })
                         })
 
-                        console.log('totalPriceEmployees', totalPriceEmployees, 'priceTotalProducts', priceTotalProducts)
-                        
-                        
-                        const total = totalPriceEmployees + priceTotalProducts;
 
-                        return res.json(
-                            { precoTotalDaObra: total }
-                        )
+                        const fairTotal = totalPriceEmployees + priceTotalProducts;
+
+                        // Metric based in percent
+
+                        const checkSuspect = priceHelper.calculateDiference(priceEstipulated, fairTotal)
+
+
+
+                        return res.json(checkSuspect)
 
                     }).catch(error => {
                         console.log(error);

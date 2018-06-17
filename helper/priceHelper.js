@@ -1,16 +1,20 @@
-exports.calculatePrice = function (dateStart, dateFinished) {
-    // Define 0,05 centavos by minute
-    const diferenceBySeconds = (new Date(dateStart).getTime() - new Date(dateFinished).getTime()) / 1000;
-    const diferenceByMinutes = diferenceBySeconds / 60;
+exports.calculateDiference = function (priceEstipulated, fairPrice) {
+    // metric is 25%
 
-    return Math.abs(diferenceByMinutes * 0.016).toFixed(2)
+    const value = (priceEstipulated - fairPrice) / priceEstipulated * 100
 
+    const percent = Math.floor(value.toString().replace(/0+/, ''));
+
+    if (percent > 25) {
+        return {
+            percentageAbove: percent,
+            suspect: true
+        }
+    } else {
+        return {
+            percentageAbove: percent,
+            suspect: false
+        }
+    }
 }
 
-exports.runTime = function (dateStart, dateFinished) {
-
-    const diferenceBySeconds = (new Date(dateStart).getTime() - new Date(dateFinished).getTime()) / 1000;
-    const diferenceByMinutes = diferenceBySeconds / 60;
-
-    return Math.abs(Math.round(diferenceByMinutes)) + " minuto(s)"
-}
